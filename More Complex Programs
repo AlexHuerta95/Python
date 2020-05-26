@@ -1,0 +1,244 @@
+# Finding Numbers in a Haystack
+#
+# In this assignment you will read through and parse a file with text and numbers.
+# You will extract all the numbers in the file and compute the sum of the numbers.
+#
+# Data Files
+# We provide two files for this assignment. One is a sample file where we give you
+# the sum for your testing and the other is the actual data you need to process for the assignment.
+#
+# Sample data: http://py4e-data.dr-chuck.net/regex_sum_42.txt (There are 90 values with a sum=445833)
+# Actual data: http://py4e-data.dr-chuck.net/regex_sum_189368.txt (There are 99 values and the sum ends with 821)
+# These links open in a new window. Make sure to save the file into the same folder as you will be writing your
+# Python program. Note: Each student will have a distinct data file for the assignment - so only use your own data
+# file for analysis.
+
+import re
+
+
+hdl = open("regex_sum_189368.txt", "r")
+rst = 0
+number = list()
+for line in hdl:
+    strnumber = re.findall("[0-9]+", line)
+    if len(strnumber) > 0:
+        for number in strnumber:
+            rst = rst + int(number)
+print(rst)
+
+
+# Scraping Numbers from HTML using BeautifulSoup In this assignment you will write a Python program
+# similar to http://www.py4e.com/code3/urllink2.py. The program will use urllib to read the HTML from
+# the data files below, and parse the data, extracting numbers and compute the sum of the numbers in the file.
+#
+# We provide two files for this assignment. One is a sample file where we give you the sum for your testing and
+# the other is the actual data you need to process for the assignment.
+#
+# Sample data: http://py4e-data.dr-chuck.net/comments_42.html (Sum=2553)
+# Actual data: http://py4e-data.dr-chuck.net/comments_189370.html (Sum ends with 20)
+# You do not need to save these files to your folder since your program will read the data directly from the URL.
+# Note: Each student will have a distinct data url for the assignment - so only use your own data url for analysis.
+
+from urllib import request
+from bs4 import BeautifulSoup
+
+html = request.urlopen(input("Enter - ")).read()
+sopa = BeautifulSoup(html, "html.parser")
+tags = sopa('span')
+sumFin = 0
+for tag in tags:
+    sumFin = sumFin+int(tag.contents[0])
+print(sumFin)
+
+
+# In this assignment you will write a Python program that expands on http://www.py4e.com/code3/urllinks.py.
+# The program will use urllib to read the HTML from the data files below, extract the href= vaues from the anchor tags,
+# scan for a tag that is in a particular position relative to the first name in the list, follow that link and repeat
+# the process a number of times and report the last name you find.
+#
+# We provide two files for this assignment. One is a sample file where we give you the name for your testing and the
+# other is the actual data you need to process for the assignment
+#
+# Sample problem: Start at http://py4e-data.dr-chuck.net/known_by_Fikret.html
+# Find the link at position 3 (the first name is 1). Follow that link. Repeat this process 4 times. The answer is the
+# last name that you retrieve.
+# Sequence of names: Fikret Montgomery Mhairade Butchi Anayah
+# Last name in sequence: Anayah
+# Actual problem: Start at: http://py4e-data.dr-chuck.net/known_by_Alexx.html
+# Find the link at position 18 (the first name is 1). Follow that link. Repeat this process 7 times. The answer is the
+# last name that you retrieve.
+# Hint: The first character of the name of the last page that you will load is: M
+# Strategy
+# The web pages tweak the height between the links and hide the page after a few seconds to make it difficult for you
+# to do the assignment without writing a Python program. But frankly with a little effort and patience you can overcome
+# these attempts to make it a little harder to complete the assignment without writing a Python program. But that is not
+# the point. The point is to write a clever Python program to solve the program.
+
+from urllib import request
+from bs4 import BeautifulSoup
+
+url = input('Enter URL - ')
+cnt = int(input('Enter count: '))
+pos = int(input('Enter position: '))-1
+html = request.urlopen(url).read()
+
+sopa = BeautifulSoup(html,"html.parser")
+href = sopa('a')
+#print href
+
+for i in range(cnt):
+    link = href[pos].get('href', None)
+    print(href[pos].contents[0])
+    html = request.urlopen(link).read()
+    sopa = BeautifulSoup(html,"html.parser")
+    href = sopa('a')
+
+
+# Extracting Data from XML
+#
+# In this assignment you will write a Python program somewhat similar to http://www.py4e.com/code3/geoxml.py.
+# The program will prompt for a URL, read the XML data from that URL using urllib and then parse and extract
+# the comment counts from the XML data, compute the sum of the numbers in the file.
+#
+# We provide two files for this assignment. One is a sample file where we give you the sum for your testing and
+# the other is the actual data you need to process for the assignment.
+#
+# Sample data: http://py4e-data.dr-chuck.net/comments_42.xml (Sum=2553)
+# Actual data: http://py4e-data.dr-chuck.net/comments_189372.xml (Sum ends with 87)
+# You do not need to save these files to your folder since your program will read the data directly from the URL.
+# Note: Each student will have a distinct data url for the assignment - so only use your own data url for analysis.
+
+from urllib import request
+import xml.etree.ElementTree as ET
+
+address = input("Enter location: ")
+if len(address) < 1:
+    address = "http://python-data.dr-chuck.net/comments_189372.xml"
+print("Retrieving " + address)
+
+exmls = request.urlopen(address).read()
+print("Retrieved: " + str(len(exmls)) + " characters")
+
+tree = ET.fromstring(exmls)
+
+cnt = tree.findall('.//count')
+print("Count: " + str(len(cnt)))
+
+total = 0
+
+for count in cnt:
+    total += int(count.text)
+
+print("Sum: " + str(total))
+
+
+# In this assignment you will write a Python program somewhat similar to http://www.py4e.com/code3/json2.py.
+# The program will prompt for a URL, read the JSON data from that URL using urllib and then parse and extract the
+# comment counts from the JSON data, compute the sum of the numbers in the file and enter the sum below:
+# We provide two files for this assignment. One is a sample file where we give you the sum for your testing and the
+# other is the actual data you need to process for the assignment.
+
+# Sample data: http://py4e-data.dr-chuck.net/comments_42.json (Sum=2553)
+# Actual data: http://py4e-data.dr-chuck.net/comments_189373.json (Sum ends with 58)
+
+# You do not need to save these files to your folder since your program will read the data directly from the URL.
+# Note: Each student will have a distinct data url for the assignment - so only use your own data url for analysis.
+
+import urllib.request, urllib.parse, urllib.error
+import json
+
+url = input("Enter location: ")
+addy = urllib.request.urlopen(url)
+info = addy.read()
+
+amount = 0
+
+while True:
+    if len(url) < 1: break
+
+    print("Retrieving: ", addy)
+    print("Retrieved", len(info)," characters")
+
+    data = json.loads(info)
+    data = data["comments"]
+    # go through each record in the dictionary
+    for item in data:
+        # print("Count: ", item["count"]) # to see each sum/count, un-grey this and the next print statement
+        amount += int(item["count"])
+        # print("Sum: ", amount)
+    print("Total Summation of Counts: ", amount)
+    break
+
+
+# Calling a JSON API
+
+# In this assignment you will write a Python program somewhat similar to http://www.py4e.com/code3/geojson.py.
+# The program will prompt for a location, contact a web service and retrieve JSON for the web service and parse
+# that data, and retrieve the first place_id from the JSON. A place ID is a textual identifier that uniquely identifies
+# a place as within Google Maps.
+# API End Points
+# To complete this assignment, you should use this API endpoint that has a static subset of the Google Data:
+
+# http://py4e-data.dr-chuck.net/json?
+
+# This API uses the same parameter (address) as the Google API. This API also has no rate limit so you can test as often
+# as you like. If you visit the URL with no parameters, you get "No address..." response.
+# To call the API, you need to provide the address that you are requesting as the address= parameter that is properly
+# URL encoded using the urllib.parse.urlencode() function as shown in http://www.py4e.com/code3/geojson.py
+
+# Test Data / Sample Execution
+
+# You can test to see if your program is working with a location of "South Federal University" which will have a
+# place_id of "ChIJ9e_QQm0sDogRhUPatldEFxw".
+
+
+# Please run your program to find the place_id for this location:
+# IU
+# Make sure to enter the name and case exactly as above and enter the place_id and your Python code below.
+# Hint: The first seven characters of the place_id are "ChIJM62 ..."
+# Make sure to retreive the data from the URL specified above and not the normal Google API. Your program should work
+# with the Google API - but the place_id may not match for this assignment.
+
+import urllib.request, urllib.parse, urllib.error
+import json
+import ssl
+
+api_key = False
+# If you have a Google Places API key, enter it here
+# api_key = 'AIzaSy___IDByT70'
+# https://developers.google.com/maps/documentation/geocoding/intro
+
+if api_key is False:
+    api_key = 42
+    serviceurl = 'http://py4e-data.dr-chuck.net/json?'
+else :
+    serviceurl = 'https://maps.googleapis.com/maps/api/geocode/json?'
+
+# Ignore SSL certificate errors
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+while True:
+    address = input('Enter location: ')
+    if len(address) < 1: break
+
+    parms = dict()
+    parms['address'] = address
+    if api_key is not False: parms['key'] = api_key
+    url = serviceurl + urllib.parse.urlencode(parms)
+
+    print('Retrieving', url)
+    uh = urllib.request.urlopen(url, context=ctx)
+    data = uh.read().decode()
+    print('Retrieved', len(data), 'characters')
+
+    try:
+        js = json.loads(data)
+        print("Place id: ", js["results"][0]["place_id"])
+
+    except:
+        js = None
+        print("------------ Unable To Retrieve -------------")
+
+
